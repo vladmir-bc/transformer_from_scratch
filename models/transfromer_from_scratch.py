@@ -80,6 +80,26 @@ class PositionalEncoding(nn.Module):
         return self.dropout(x)
 
 
+class LayerNormalization(nn.Module):
+
+    def __init__(self, eps: float = 10**-6) -> None:
+        super().__init__()
+        self.eps = eps  # needs for numerical stability
+        self.alpha = nn.Parameter(torch.ones(1))  # learnable parameter, multiplied
+        self.bias = nn.Parameter(torch.zeros(1))  # learnable parameter, added
+
+    def forward(self, x):
+        mean = x.mean(dim=-1, keepdim=True)
+        std = x.std(dim=-1, keepdim=True)
+        return self.alpha * (x - mean) / (std + self.eps) + self.bias
+
+
+class FeedForwardBlock:
+    
+    def __init__(self, d_model: int, d_ff: int, dropout: float) -> None:
+        pass
+
+
 # print(torch.arange(0, 10, dtype=torch.float))
 # print(torch.arange(0, 10, dtype=torch.float).unsqueeze(1))
 # print(torch.arange(0, 10, 2))
